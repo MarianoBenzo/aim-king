@@ -21,7 +21,6 @@ class GameService {
             switch (messageWS.type) {
                 case ServerMessageWSType.GAME:
                     const game = new Game(JSON.parse(messageWS.data))
-                    console.log("Game: ", game)
                     CanvasService.drawGame(game)
                     break;
             }

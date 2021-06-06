@@ -67,7 +67,9 @@ class GameWebSocketService {
     private fun emit(session: Session, type: ServerMessageWSType, data: Any? = null) {
         val dataString = jacksonObjectMapper().writeValueAsString(data)
         val messageWS = MessageWS(type, dataString)
-        session.remote.sendString(jacksonObjectMapper().writeValueAsString(messageWS))
+        synchronized(session) {
+            session.remote.sendString(jacksonObjectMapper().writeValueAsString(messageWS))
+        }
     }
 
     private fun broadcast(type: ServerMessageWSType, data: Any?) = players.forEach { emit(it.key, type, data) }

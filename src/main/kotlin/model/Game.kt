@@ -2,6 +2,7 @@ package model
 
 import service.GameWebSocketService
 import java.util.*
+import java.util.Collections.synchronizedList
 import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlin.random.Random
@@ -9,7 +10,7 @@ import kotlin.random.Random
 class Game(private val gameWebSocketService: GameWebSocketService){
     private val height = 500
     private val width = 800
-    val targets: MutableList<Target> = mutableListOf()
+    val targets: MutableList<Target> = synchronizedList(mutableListOf())
 
     init {
         Timer().scheduleAtFixedRate(object : TimerTask() {
