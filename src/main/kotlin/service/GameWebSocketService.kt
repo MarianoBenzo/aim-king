@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicLong
 class GameWebSocketService {
 
     private var game = Game(this)
-    val players: HashMap<Session, Player> = HashMap()
+    private val players: HashMap<Session, Player> = HashMap()
     private var ids = AtomicLong(0)
 
     @OnWebSocketConnect
@@ -57,6 +57,7 @@ class GameWebSocketService {
 
     @OnWebSocketClose
     fun onDisconnect(session: Session, code: Int, reason: String?) {
+        players.remove(session)
         println("Session Disconnected - Code: $code Reason: $reason")
     }
 
