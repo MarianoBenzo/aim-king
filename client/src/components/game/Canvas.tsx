@@ -1,9 +1,11 @@
 import * as React from "react";
-import {useEffect} from "react";
+import {useContext, useEffect} from "react";
 import CanvasService from "services/CanvasService";
 import GameService from "services/GameService";
+import {GameContext} from "components/game/GameProvider";
 
 export const Canvas = () => {
+    const {height, width} = useContext(GameContext)
 
     useEffect(() => {
         const canvas = document.getElementById("canvas") as HTMLCanvasElement;
@@ -28,6 +30,6 @@ export const Canvas = () => {
     }
 
     return (
-        <canvas id="canvas">Error</canvas>
+        <canvas id="canvas" height={height} width={width}>Error</canvas>
     );
 };

@@ -3,26 +3,22 @@ import Target from "models/Target";
 
 class CanvasService {
     ctx: CanvasRenderingContext2D;
-    width: number;
-    height: number;
 
     constructor() {
         this.ctx = null;
-        this.width = 800;
-        this.height = 500;
     }
 
     initialize(canvas: HTMLCanvasElement) {
         canvas.style.background = '#eee';
-        canvas.width = this.width;
-        canvas.height = this.height;
-
         this.ctx = canvas.getContext('2d');
     }
 
     drawGame(game: Game) {
         if (this.ctx) {
-            this.ctx.clearRect(0, 0, this.width, this.height);
+            const height = this.ctx.canvas.height;
+            const width = this.ctx.canvas.width;
+
+            this.ctx.clearRect(0, 0, height, width);
 
             this.drawBackground();
 
@@ -33,26 +29,29 @@ class CanvasService {
     }
 
     drawBackground() {
+        const height = this.ctx.canvas.height;
+        const width = this.ctx.canvas.width;
+
         const fillColor = 'rgba(255, 255, 255)';
         const strokeColor = 'rgba(221, 221, 221)';
 
         this.ctx.fillStyle = fillColor;
-        this.ctx.fillRect(0, 0, this.width, this.height);
+        this.ctx.fillRect(0, 0, width, height);
 
         this.ctx.beginPath();
-        for (let x = 0; x < this.width; x += 40) {
+        for (let x = 0; x < width; x += 40) {
             this.ctx.moveTo(x, 0);
-            this.ctx.lineTo(x, this.height);
+            this.ctx.lineTo(x, height);
         }
-        this.ctx.moveTo(this.width, 0);
-        this.ctx.lineTo(this.width, this.height);
+        this.ctx.moveTo(width, 0);
+        this.ctx.lineTo(width, height);
 
-        for (let y = 0; y < this.height; y += 40) {
+        for (let y = 0; y < height; y += 40) {
             this.ctx.moveTo(0, y);
-            this.ctx.lineTo(this.width, y);
+            this.ctx.lineTo(width, y);
         }
-        this.ctx.moveTo(0, this.height);
-        this.ctx.lineTo(this.width, this.height);
+        this.ctx.moveTo(0, height);
+        this.ctx.lineTo(width, height);
 
         this.ctx.closePath();
 

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>marianobenzo</groupId>
-    <artifactId>aim-reflex</artifactId>
+    <artifactId>aim-king</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
@@ -17,7 +17,7 @@
         <slf4j.version>1.7.25</slf4j.version>
         <guice.version>5.0.1</guice.version>
 
-        <main.class>AimReflexApp</main.class>
+        <main.class>AimKingApp</main.class>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <kotlin.code.style>official</kotlin.code.style>

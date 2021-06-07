@@ -6,7 +6,7 @@ import service.GameWebSocketService
 import spark.Spark.*
 import kotlin.system.exitProcess
 
-private class AimReflexApp(private val injector: Injector) {
+private class AimKingApp(private val injector: Injector) {
 
     fun configure() = apply {
         port(System.getenv("PORT")?.toInt() ?: 9000)
@@ -24,7 +24,7 @@ private class AimReflexApp(private val injector: Injector) {
                     ControllerModule(),
                     AppModule()
                 )
-                AimReflexApp(injector).configure()
+                AimKingApp(injector).configure()
             } catch (e: Exception) {
                 println("Error starting the application")
                 exitProcess(1)

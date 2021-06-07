@@ -12,7 +12,7 @@ class GameService {
         this.webSocket = new WebSocket(`${protocol}${location.hostname}:${location.port}/ws/game`);
     }
 
-    init() {
+    init(setHeight: Function, setWidth: Function) {
         this.sendPing()
 
         this.webSocket.onmessage = (messageEvent: MessageEvent) => {
@@ -21,6 +21,8 @@ class GameService {
             switch (messageWS.type) {
                 case ServerMessageWSType.GAME:
                     const game = new Game(JSON.parse(messageWS.data))
+                    setHeight(game.height)
+                    setWidth(game.width)
                     CanvasService.drawGame(game)
                     break;
             }

@@ -13,7 +13,7 @@ class PageViewController {
         { request: Request, _: Response ->
             ClientRequest(request).let {
                 val model: HashMap<String, Any?> = hashMapOf(
-                    "title" to "Aim Reflex"
+                    "title" to "Aim King"
                 )
 
                 render("index.vm", model)

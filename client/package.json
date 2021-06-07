@@ -1,7 +1,7 @@
 {
-  "name": "aim-reflex",
+  "name": "aim-king",
   "version": "1.0.0",
-  "description": "Aim Reflex App",
+  "description": "Aim King App",
   "main": "index.js",
   "scripts": {
     "start": "webpack --watch --info-verbosity verbose",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/MarianoBenzo/aim-reflex.git"
+    "url": "https://github.com/MarianoBenzo/aim-king.git"
   },
   "author": "Mariano Benzo",
   "license": "ISC",
