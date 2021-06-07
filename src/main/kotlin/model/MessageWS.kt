@@ -1,7 +1,6 @@
 package model
 
 class MessageWS(val type: String, val data: String?) {
-    constructor(type: ClientMessageWSType, data: String?) : this(type.name, data)//TODO
     constructor(type: ServerMessageWSType, data: String?) : this(type.name, data)
 }
 
