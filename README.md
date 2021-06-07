@@ -1,2 +1,2 @@
-# aim-reflex
-Aim Reflex Game
+# aim-king
+Aim King Game
