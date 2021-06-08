@@ -39,14 +39,14 @@ class CanvasService {
         this.ctx.fillRect(0, 0, width, height);
 
         this.ctx.beginPath();
-        for (let x = 0; x < width; x += 40) {
+        for (let x = 0; x < width; x += 80) {
             this.ctx.moveTo(x, 0);
             this.ctx.lineTo(x, height);
         }
         this.ctx.moveTo(width, 0);
         this.ctx.lineTo(width, height);
 
-        for (let y = 0; y < height; y += 40) {
+        for (let y = 0; y < height; y += 80) {
             this.ctx.moveTo(0, y);
             this.ctx.lineTo(width, y);
         }
@@ -73,7 +73,7 @@ class CanvasService {
         );
         this.ctx.fillStyle = '#0098C67F';
         this.ctx.fill();
-        this.ctx.lineWidth = 2;
+        this.ctx.lineWidth = 4;
         this.ctx.strokeStyle = '#006b8d';
         this.ctx.stroke();
     }

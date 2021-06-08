@@ -8,8 +8,8 @@ import kotlin.math.sqrt
 import kotlin.random.Random
 
 class Game(private val gameWebSocketService: GameWebSocketService){
-    val height = 500
-    val width = 1100
+    val height = 1000
+    val width = 2200
     val targets: MutableList<Target> = synchronizedList(mutableListOf())
 
     init {
@@ -24,7 +24,7 @@ class Game(private val gameWebSocketService: GameWebSocketService){
 
     fun addRandomTarget() {
         val randomPosition = Position(Random.nextInt(width), Random.nextInt(height))
-        val randomTarget = Target(randomPosition, 50)
+        val randomTarget = Target(randomPosition, 100)
         targets.add(randomTarget)
         gameWebSocketService.broadcastGame()
     }

@@ -6,6 +6,7 @@ import {GameContext} from "components/game/GameProvider";
 
 export const Canvas = () => {
     const {height, width} = useContext(GameContext)
+    const scala = 2
 
     useEffect(() => {
         const canvas = document.getElementById("canvas") as HTMLCanvasElement;
@@ -22,14 +23,25 @@ export const Canvas = () => {
         */
     }, []);
 
+
     const sendMousePosition = (canvas, event) => {
         let rect = canvas.getBoundingClientRect();
-        let x = event.clientX - rect.left;
-        let y = event.clientY - rect.top;
+        let x = (event.clientX - rect.left) * scala;
+        let y = (event.clientY - rect.top) * scala;
         GameService.sendClickPosition(x, y)
     }
 
+    const style = {
+        height: `${height / scala}px`,
+        width: `${width / scala}px`
+    }
+
     return (
-        <canvas id="canvas" height={height} width={width}>Error</canvas>
+        <canvas id="canvas"
+                height={height}
+                width={width}
+                style={style}>
+            Error
+        </canvas>
     );
 };
