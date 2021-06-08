@@ -23,8 +23,12 @@ class Game(private val gameWebSocketService: GameWebSocketService){
     }
 
     fun addRandomTarget() {
-        val randomPosition = Position(Random.nextInt(width), Random.nextInt(height))
-        val randomTarget = Target(randomPosition, 100)
+        val radius = 100
+        val randomPosition = Position(
+            Random.nextInt(width - (radius * 2)) + radius,
+            Random.nextInt(height - (radius * 2)) + radius
+        )
+        val randomTarget = Target(randomPosition, radius)
         targets.add(randomTarget)
         gameWebSocketService.broadcastGame()
     }
