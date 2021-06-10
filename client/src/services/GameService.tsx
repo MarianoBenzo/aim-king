@@ -43,6 +43,15 @@ class GameService {
 
     sendNewPlayer(playerName: string) {
         this.sendMessageWS(ClientMessageWSType.NEW_PLAYER, playerName)
+        setTimeout(() => this.sendNewGame2(), 1000)
+    }
+
+    sendNewGame1() {
+        this.sendMessageWS(ClientMessageWSType.NEW_GAME1)
+    }
+
+    sendNewGame2() {
+        this.sendMessageWS(ClientMessageWSType.NEW_GAME2)
     }
 
     sendClickPosition(x: number, y: number) {

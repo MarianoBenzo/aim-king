@@ -30,11 +30,17 @@ class WebSocketReceiverService(
                 webSocketSenderService.emit(session, ServerMessageWSType.PONG)
             }
             ClientMessageWSType.NEW_PLAYER.name -> {
-                aimKingService.newPlayer(session, messageWS.data)
+                aimKingService.connectPlayer(session, messageWS.data ?: "Player")
+            }
+            ClientMessageWSType.NEW_GAME1.name -> {
+                aimKingService.newGame1(session)
+            }
+            ClientMessageWSType.NEW_GAME2.name -> {
+                aimKingService.newGame2(session)
             }
             ClientMessageWSType.CLICK.name -> {
                 val position = messageWS.data?.let { jacksonObjectMapper().readValue<Position>(it) }
-                aimKingService.click(position)
+                position?.let { aimKingService.games[session]?.click(it) }
             }
         }
         println("Message Received - Type: ${messageWS.type} ${messageWS.data?.let { "Data: $it" } ?: ""}")
@@ -42,7 +48,7 @@ class WebSocketReceiverService(
 
     @OnWebSocketClose
     fun onDisconnect(session: Session, code: Int, reason: String?) {
-        aimKingService.players.remove(session)
+        aimKingService.disconnectPlayer(session)
         println("Session Disconnected - Code: $code Reason: $reason")
     }
 }
