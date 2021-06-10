@@ -10,14 +10,11 @@ import kotlin.collections.HashMap
 class PageViewController {
 
     fun index() =
-        { request: Request, _: Response ->
-            ClientRequest(request).let {
-                val model: HashMap<String, Any?> = hashMapOf(
-                    "title" to "Aim King"
-                )
-
-                render("index.vm", model)
-            }
+        { _: Request, _: Response ->
+            val model: HashMap<String, Any?> = hashMapOf(
+                "title" to "Aim King"
+            )
+            render("index.vm", model)
         }
 
     companion object {
