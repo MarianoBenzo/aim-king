@@ -2,7 +2,8 @@ import com.google.inject.Guice
 import com.google.inject.Injector
 import injection.AppModule
 import injection.ControllerModule
-import service.GameWebSocketService
+import injection.ServicesModule
+import service.WebSocketReceiverService
 import spark.Spark.*
 import kotlin.system.exitProcess
 
@@ -12,7 +13,6 @@ private class AimKingApp(private val injector: Injector) {
         port(System.getenv("PORT")?.toInt() ?: 9000)
         staticFiles.externalLocation("src/main/resources/public")
         //staticFiles.location("public")
-        webSocket("/ws/game", GameWebSocketService::class.java)
         injector.getInstance(Routes::class.java).register()
     }
 
@@ -22,6 +22,7 @@ private class AimKingApp(private val injector: Injector) {
             try {
                 val injector = Guice.createInjector(
                     ControllerModule(),
+                    ServicesModule(),
                     AppModule()
                 )
                 AimKingApp(injector).configure()
