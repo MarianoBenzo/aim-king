@@ -16,5 +16,12 @@
 
         <script type="text/javascript" src="static/vendor.chunk.bundle.js"></script>
         <script type="text/javascript" src="static/main.js"></script>
+
+        <script>
+            var canvasResolution = {
+                height: $height,
+                width: $width
+            };
+        </script>
     </body>
 </html>

@@ -11,6 +11,7 @@ class CanvasService {
     initialize(canvas: HTMLCanvasElement) {
         canvas.style.background = '#eee';
         this.ctx = canvas.getContext('2d');
+        this.drawBackground()
     }
 
     drawGame(game: Game) {

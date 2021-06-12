@@ -3,8 +3,10 @@ import MessageWS, {ClientMessageWSType, ServerMessageWSType} from "models/Messag
 import CanvasService from "services/CanvasService";
 import Position from "models/Position";
 import Game from "models/Game";
+import GameStartModal from "components/modal/GameStartModal";
+import GameEndModal from "components/modal/GameEndModal";
 
-class GameService {
+class WebSocketService {
     webSocket: WebSocket;
 
     constructor() {
@@ -12,18 +14,24 @@ class GameService {
         this.webSocket = new WebSocket(`${protocol}${location.hostname}:${location.port}/ws/game`);
     }
 
-    init(setHeight: Function, setWidth: Function) {
+    init(showModal: Function, hideModal: Function) {
         this.sendPing()
 
         this.webSocket.onmessage = (messageEvent: MessageEvent) => {
             const messageWS = JSON.parse(messageEvent.data)
 
             switch (messageWS.type) {
+                case ServerMessageWSType.GAME_START:
+                    const startIn = JSON.parse(messageWS.data) as number
+                    showModal(<GameStartModal hideModal={hideModal} startIn={startIn}/>)
+                    break;
                 case ServerMessageWSType.GAME:
                     const game = new Game(JSON.parse(messageWS.data))
-                    setHeight(game.height)
-                    setWidth(game.width)
                     CanvasService.drawGame(game)
+                    break;
+                case ServerMessageWSType.GAME_END:
+                    const result = JSON.parse(messageWS.data)
+                    showModal(<GameEndModal showModal={showModal} hideModal={hideModal} result={result}/>)
                     break;
             }
         }
@@ -45,10 +53,18 @@ class GameService {
         this.sendMessageWS(ClientMessageWSType.NEW_PLAYER, playerName)
     }
 
+    sendNewGame1() {
+        this.sendMessageWS(ClientMessageWSType.NEW_GAME, "GAME1")
+    }
+
+    sendNewGame2() {
+        this.sendMessageWS(ClientMessageWSType.NEW_GAME, "GAME2")
+    }
+
     sendClickPosition(x: number, y: number) {
         const data = JSON.stringify(new Position(x, y))
         this.sendMessageWS(ClientMessageWSType.CLICK, data)
     }
 }
 
-export default new GameService();
+export default new WebSocketService();
