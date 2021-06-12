@@ -4,48 +4,29 @@ import org.eclipse.jetty.websocket.api.Session
 import service.AimKingService
 import service.WebSocketSenderService
 import java.util.*
-import java.util.Collections.synchronizedList
-import kotlin.math.pow
-import kotlin.math.sqrt
-import kotlin.random.Random
 
 class Game1 (
-    private val aimKingService: AimKingService,
-    private val webSocketSenderService: WebSocketSenderService,
-    private val player: Pair<Session, Player>
-) : Game {
-    val targets: MutableList<Target> = synchronizedList(mutableListOf())
-    private val height = aimKingService.height
-    private val width = aimKingService.width
-    private var startTime: Long = 0
+    aimKingService: AimKingService,
+    webSocketSenderService: WebSocketSenderService,
+    player: Pair<Session, Player>
+) : Game(
+    aimKingService, webSocketSenderService, hashMapOf(player)
+) {
     private var score: Int = 0
 
-    fun start() {
+    override fun start() {
         val startIn: Long = 3000
-        emitStartGame(startIn)
+        broadcastStartGame(startIn)
         Timer().schedule(object : TimerTask() {
             override fun run() {
                 startTime = System.currentTimeMillis()
                 addRandomTarget()
-                emitGame()
+                broadcastGame()
             }
         }, startIn)
     }
 
-    private fun addRandomTarget() {
-        val radius = 100
-        val randomPosition = Position(
-            Random.nextInt(width - (radius * 2)) + radius,
-            Random.nextInt(height - (radius * 2)) + radius
-        )
-        val randomTarget = Target(randomPosition, radius)
-        targets.add(randomTarget)
-    }
-
-    private fun onTarget(position: Position, target: Target): Boolean {
-        val distance = sqrt((target.position.x.toDouble() - position.x.toDouble()).pow(2) + (target.position.y.toDouble() - position.y.toDouble()).pow(2))
-        return distance <= target.radius
-    }
+    override fun disconnectPlayer(session: Session) {}
 
     override fun click(session: Session, position: Position) {
         val target: Target? = targets.findLast { target -> onTarget(position, target) }
@@ -54,27 +35,17 @@ class Game1 (
             score += 1
             if ( score < 50) {
                 addRandomTarget()
-                emitGame()
+                broadcastGame()
             } else {
-                emitGame()
-                emitEndGame()
+                broadcastGame()
+                broadcastEndGame(players[session]!!)
             }
         }
     }
 
-    override fun disconnectPlayer(session: Session) {}
-
-    private fun emitEndGame() {
+    override fun broadcastEndGame(winningPlayer: Player) {
         val time = System.currentTimeMillis() - startTime
-        aimKingService.addNewTime(player.first, time)
-        webSocketSenderService.emit(player.first, ServerMessageWSType.GAME_END, "Time: ${time / 1000.0} seconds")
-    }
-
-    private fun emitGame() {
-        webSocketSenderService.emit(player.first, ServerMessageWSType.GAME, this)
-    }
-
-    private fun emitStartGame(startIn: Long) {
-        webSocketSenderService.emit(player.first, ServerMessageWSType.GAME_START, startIn)
+        aimKingService.addNewTime(winningPlayer, time)
+        webSocketSenderService.broadcast(players.keys, ServerMessageWSType.GAME_END, "Time: ${time / 1000.0} seconds")
     }
 }

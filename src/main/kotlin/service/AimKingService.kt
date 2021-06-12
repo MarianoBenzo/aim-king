@@ -13,9 +13,9 @@ class AimKingService(private val webSocketSenderService: WebSocketSenderService)
     var ids = AtomicLong(0)
     val players: HashMap<String, Player> = HashMap()
     val playersOnline: HashMap<Session, Player> = HashMap()
-    val playersInLobby: HashMap<Session, Player> = HashMap()
+    private val playersInLobby: HashMap<Session, Player> = HashMap()
     val games: HashMap<Session, Game> = HashMap()
-    val ranking: MutableList<Pair<Player, Long>> = mutableListOf()
+    private val ranking: MutableList<Pair<Player, Long>> = mutableListOf()
 
     fun connectPlayer(session: Session, name: String) {
         players[name]?.let {
@@ -50,10 +50,8 @@ class AimKingService(private val webSocketSenderService: WebSocketSenderService)
         }
     }
 
-    fun addNewTime(session: Session, time: Long) {
-        playersOnline[session]?.let {
-            ranking.add(Pair(it, time))
-        }
+    fun addNewTime(player: Player, time: Long) {
+        ranking.add(Pair(player, time))
     }
 
     fun getTop10(): List<Pair<Player, Long>> {
