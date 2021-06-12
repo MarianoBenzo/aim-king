@@ -32,11 +32,13 @@ class WebSocketReceiverService(
             ClientMessageWSType.NEW_PLAYER.name -> {
                 aimKingService.connectPlayer(session, messageWS.data ?: "Player")
             }
-            ClientMessageWSType.NEW_GAME1.name -> {
-                aimKingService.newGame1(session)
-            }
-            ClientMessageWSType.NEW_GAME2.name -> {
-                aimKingService.newGame2(session)
+            ClientMessageWSType.NEW_GAME.name -> {
+                messageWS.data?.let {
+                    when (it) {
+                        "GAME1" -> aimKingService.newGame1(session)
+                        "GAME2" -> aimKingService.newGame2(session)
+                    }
+                }
             }
             ClientMessageWSType.CLICK.name -> {
                 val position = messageWS.data?.let { jacksonObjectMapper().readValue<Position>(it) }

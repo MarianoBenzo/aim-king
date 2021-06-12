@@ -3,6 +3,7 @@ package model
 import org.eclipse.jetty.websocket.api.Session
 import service.AimKingService
 import service.WebSocketSenderService
+import java.util.*
 import java.util.Collections.synchronizedList
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -16,21 +17,19 @@ class Game1 (
     val targets: MutableList<Target> = synchronizedList(mutableListOf())
     private val height = aimKingService.height
     private val width = aimKingService.width
-    private val startTime: Long = System.currentTimeMillis()
+    private var startTime: Long = 0
     private var score: Int = 0
 
-    init {
-        /*
-        Timer().scheduleAtFixedRate(object : TimerTask() {
+    fun start() {
+        val startIn: Long = 3000
+        emitStartGame(startIn)
+        Timer().schedule(object : TimerTask() {
             override fun run() {
-                if (game.targets.size < 200) {
-                    addRandomTarget()
-                }
+                startTime = System.currentTimeMillis()
+                addRandomTarget()
+                emitGame()
             }
-        }, 0, 500)
-        */
-        addRandomTarget()
-        webSocketSenderService.emit(player.first, ServerMessageWSType.GAME, this)
+        }, startIn)
     }
 
     private fun addRandomTarget() {
@@ -55,19 +54,27 @@ class Game1 (
             score += 1
             if ( score < 3) {
                 addRandomTarget()
-                webSocketSenderService.emit(player.first, ServerMessageWSType.GAME, this)
+                emitGame()
             } else {
-                webSocketSenderService.emit(player.first, ServerMessageWSType.GAME, this)
-                endGame()
+                emitGame()
+                emitEndGame()
             }
         }
     }
 
     override fun disconnectPlayer(session: Session) {}
 
-    private fun endGame() {
+    private fun emitEndGame() {
         val time = System.currentTimeMillis() - startTime
         aimKingService.addNewTime(player.first, time)
-        webSocketSenderService.emit(player.first, ServerMessageWSType.GAME_END, "${time / 1000.0} seconds")
+        webSocketSenderService.emit(player.first, ServerMessageWSType.GAME_END, "Time: ${time / 1000.0} seconds")
+    }
+
+    private fun emitGame() {
+        webSocketSenderService.emit(player.first, ServerMessageWSType.GAME, this)
+    }
+
+    private fun emitStartGame(startIn: Long) {
+        webSocketSenderService.emit(player.first, ServerMessageWSType.GAME_START, startIn)
     }
 }

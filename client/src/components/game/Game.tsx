@@ -10,11 +10,11 @@ const Game = React.memo(() => {
     const {showModal, hideModal} = useContext(ModalContext)
 
     useEffect(() => {
-        WebSocketService.init();
+        WebSocketService.init(showModal, hideModal);
     }, []);
 
     useEffect(() => {
-        showModal(<ConnectionModal hideModal={hideModal}/>)
+        showModal(<ConnectionModal showModal={showModal} hideModal={hideModal}/>)
     }, []);
 
     return (

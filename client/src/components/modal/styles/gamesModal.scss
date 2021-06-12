@@ -1,0 +1,43 @@
+.container {
+    padding: 12px;
+    background-color: #1e2428;
+    width: 600px;
+
+    @media (max-width: 767px) {
+        width: 300px;
+    }
+
+    .title {
+        color: #e1e2e3;
+        padding-bottom: 12px;
+        font-size: 48px;
+        text-align: center;
+    }
+
+    .buttons {
+        display: block;
+
+        button {
+            display: inline-block;
+            border: none;
+            padding: 12px 18px;
+            text-decoration: none;
+            background: #00af9b;
+            color: #ffffff;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: center;
+            transition: background 250ms ease-in-out, transform 150ms ease;
+
+            &:hover,
+            &:focus {
+                background: #009080;
+            }
+
+            &:active {
+                transform: scale(0.99);
+            }
+        }
+    }
+}

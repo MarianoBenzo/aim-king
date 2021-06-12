@@ -3,6 +3,8 @@ import MessageWS, {ClientMessageWSType, ServerMessageWSType} from "models/Messag
 import CanvasService from "services/CanvasService";
 import Position from "models/Position";
 import Game from "models/Game";
+import GameStartModal from "components/modal/GameStartModal";
+import GameEndModal from "components/modal/GameEndModal";
 
 class WebSocketService {
     webSocket: WebSocket;
@@ -12,20 +14,25 @@ class WebSocketService {
         this.webSocket = new WebSocket(`${protocol}${location.hostname}:${location.port}/ws/game`);
     }
 
-    init() {
+    init(showModal: Function, hideModal: Function) {
         this.sendPing()
 
         this.webSocket.onmessage = (messageEvent: MessageEvent) => {
             const messageWS = JSON.parse(messageEvent.data)
 
             switch (messageWS.type) {
+                case ServerMessageWSType.GAME_START:
+                    const startIn = JSON.parse(messageWS.data) as number
+                    showModal(<GameStartModal hideModal={hideModal} startIn={startIn}/>)
+                    break;
                 case ServerMessageWSType.GAME:
                     const game = new Game(JSON.parse(messageWS.data))
                     CanvasService.drawGame(game)
                     break;
                 case ServerMessageWSType.GAME_END:
-                    const time = JSON.parse(messageWS.data)
-                    console.log("Time: ", time)
+                    const result = JSON.parse(messageWS.data)
+                    showModal(<GameEndModal showModal={showModal} hideModal={hideModal} result={result}/>)
+                    break;
             }
         }
 
@@ -44,15 +51,14 @@ class WebSocketService {
 
     sendNewPlayer(playerName: string) {
         this.sendMessageWS(ClientMessageWSType.NEW_PLAYER, playerName)
-        this.sendNewGame1()
     }
 
     sendNewGame1() {
-        this.sendMessageWS(ClientMessageWSType.NEW_GAME1)
+        this.sendMessageWS(ClientMessageWSType.NEW_GAME, "GAME1")
     }
 
     sendNewGame2() {
-        this.sendMessageWS(ClientMessageWSType.NEW_GAME2)
+        this.sendMessageWS(ClientMessageWSType.NEW_GAME, "GAME2")
     }
 
     sendClickPosition(x: number, y: number) {

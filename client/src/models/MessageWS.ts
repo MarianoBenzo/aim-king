@@ -11,12 +11,12 @@ export default class MessageWS {
 export enum ClientMessageWSType {
 	PING = "PING",
 	NEW_PLAYER = "NEW_PLAYER",
-	NEW_GAME1 = "NEW_GAME1",
-	NEW_GAME2 = "NEW_GAME2",
+	NEW_GAME = "NEW_GAME",
 	CLICK = "CLICK"
 }
 
 export enum ServerMessageWSType {
+	GAME_START = "GAME_START",
 	GAME = "GAME",
 	GAME_END = "GAME_END"
 }

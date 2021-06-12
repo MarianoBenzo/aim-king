@@ -29,7 +29,9 @@ class AimKingService(private val webSocketSenderService: WebSocketSenderService)
 
     fun newGame1(session: Session) {
         playersOnline[session]?.let {
-            games[session] = Game1(this, webSocketSenderService, Pair(session, it))
+            val game = Game1(this, webSocketSenderService, Pair(session, it))
+            games[session] = game
+            game.start()
         }
     }
 
@@ -43,6 +45,7 @@ class AimKingService(private val webSocketSenderService: WebSocketSenderService)
                 players.keys.forEach {
                     session ->  games[session] = game
                 }
+                game.start()
             }
         }
     }

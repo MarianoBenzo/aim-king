@@ -3,8 +3,8 @@ package model
 import org.eclipse.jetty.websocket.api.Session
 import service.AimKingService
 import service.WebSocketSenderService
+import java.util.*
 import java.util.Collections.synchronizedList
-import java.util.HashMap
 import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlin.random.Random
@@ -17,22 +17,21 @@ class Game2(
     val targets: MutableList<Target> = synchronizedList(mutableListOf())
     private val height = aimKingService.height
     private val width = aimKingService.width
-    private val startTime: Long = System.currentTimeMillis()
-    private val scores: HashMap<Session, Int> = hashMapOf()
+    private var startTime: Long = 0
+    private val scores: HashMap<Player, Int> = hashMapOf()
 
-    init {
-        /*
-        Timer().scheduleAtFixedRate(object : TimerTask() {
+    fun start() {
+        players.values.forEach { player -> scores[player] = 0 }
+        val startIn: Long = 3000
+        broadcastStartGame(startIn)
+        Timer().schedule(object : TimerTask() {
             override fun run() {
-                if (game.targets.size < 200) {
-                    addRandomTarget()
-                }
+                startTime = System.currentTimeMillis()
+                addRandomTarget()
+                addRandomTarget()
+                broadcastGame()
             }
-        }, 0, 500)
-        */
-        players.keys.forEach { session -> scores[session] = 0 }
-        addRandomTarget()
-        webSocketSenderService.broadcast(players.keys, ServerMessageWSType.GAME, this)
+        }, startIn)
     }
 
     override fun disconnectPlayer(session: Session) {
@@ -55,11 +54,34 @@ class Game2(
     }
 
     override fun click(session: Session, position: Position) {
-        val target: Target? = targets.findLast { target -> onTarget(position, target) }
-        target?.let {
-            targets.remove(it)
-            addRandomTarget()
-            webSocketSenderService.broadcast(players.keys, ServerMessageWSType.GAME, this)
+        players[session]?.let { player ->
+            targets.findLast {
+                    target -> onTarget(position, target)
+            }?.let { target ->
+                targets.remove(target)
+                scores[player] = scores[player]?.plus(1) ?: 0
+                if (scores[player]!! < 3) {
+                    addRandomTarget()
+                    broadcastGame()
+                } else {
+                    targets.clear()
+                    broadcastGame()
+                    broadcastEndGame(player)
+                }
+            }
         }
+    }
+
+    private fun broadcastEndGame(winner: Player) {
+        val time = System.currentTimeMillis() - startTime
+        webSocketSenderService.broadcast(players.keys, ServerMessageWSType.GAME_END, "Winner: ${winner.name} in ${time / 1000.0} seconds")
+    }
+
+    private fun broadcastGame() {
+        webSocketSenderService.broadcast(players.keys, ServerMessageWSType.GAME, this)
+    }
+
+    private fun broadcastStartGame(startIn: Long) {
+        webSocketSenderService.broadcast(players.keys, ServerMessageWSType.GAME_START, startIn)
     }
 }

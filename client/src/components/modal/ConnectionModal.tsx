@@ -1,21 +1,23 @@
 import React, {useState} from "react";
-import ChatService from "services/WebSocketService";
+import WebSocketService from "services/WebSocketService";
 import styles from "./styles/connectionModal.scss";
+import GamesModal from "components/modal/GamesModal";
 
 interface Props {
-    hideModal: () => void
+    hideModal: Function
+    showModal: Function
 }
 
 const ConnectionModal = (props: Props) => {
-    const {hideModal} = props
+    const {showModal, hideModal} = props
 
     const [playerName, setPlayerName] = useState("");
     const [playerNameInvalid, setPlayerNameInvalid] = useState(false);
 
     const sendPlayerName = () => {
         if (!validatePlayerName(playerName)) {
-            ChatService.sendNewPlayer(playerName)
-            hideModal()
+            WebSocketService.sendNewPlayer(playerName)
+            showModal(<GamesModal showModal={showModal} hideModal={hideModal}/>)
         } else {
             setPlayerNameInvalid(true)
         }
