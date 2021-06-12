@@ -60,7 +60,7 @@ class Game2(
             }?.let { target ->
                 targets.remove(target)
                 scores[player] = scores[player]?.plus(1) ?: 0
-                if (scores[player]!! < 3) {
+                if (scores[player]!! < 50) {
                     addRandomTarget()
                     broadcastGame()
                 } else {

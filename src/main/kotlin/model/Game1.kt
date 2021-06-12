@@ -52,7 +52,7 @@ class Game1 (
         target?.let {
             targets.remove(it)
             score += 1
-            if ( score < 3) {
+            if ( score < 50) {
                 addRandomTarget()
                 emitGame()
             } else {
