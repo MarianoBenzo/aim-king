@@ -17,5 +17,6 @@ export enum ClientMessageWSType {
 }
 
 export enum ServerMessageWSType {
-	GAME = "GAME"
+	GAME = "GAME",
+	GAME_END = "GAME_END"
 }

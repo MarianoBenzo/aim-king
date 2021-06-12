@@ -5,6 +5,7 @@ import com.google.inject.AbstractModule
 import com.google.inject.Provides
 import com.google.inject.Singleton
 import controller.PageViewController
+import service.AimKingService
 import service.WebSocketReceiverService
 
 class AppModule : AbstractModule() {
@@ -13,6 +14,7 @@ class AppModule : AbstractModule() {
     @Singleton
     fun routes(
         pageViewController: PageViewController,
-        webSocketReceiverService: WebSocketReceiverService
-    ) = Routes(pageViewController, webSocketReceiverService)
+        webSocketReceiverService: WebSocketReceiverService,
+        aimKingService: AimKingService
+    ) = Routes(pageViewController, webSocketReceiverService, aimKingService)
 }

@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import ChatService from "services/GameService";
+import ChatService from "services/WebSocketService";
 import styles from "./styles/connectionModal.scss";
 
 interface Props {

@@ -4,7 +4,7 @@ import CanvasService from "services/CanvasService";
 import Position from "models/Position";
 import Game from "models/Game";
 
-class GameService {
+class WebSocketService {
     webSocket: WebSocket;
 
     constructor() {
@@ -12,7 +12,7 @@ class GameService {
         this.webSocket = new WebSocket(`${protocol}${location.hostname}:${location.port}/ws/game`);
     }
 
-    init(setHeight: Function, setWidth: Function) {
+    init() {
         this.sendPing()
 
         this.webSocket.onmessage = (messageEvent: MessageEvent) => {
@@ -21,10 +21,11 @@ class GameService {
             switch (messageWS.type) {
                 case ServerMessageWSType.GAME:
                     const game = new Game(JSON.parse(messageWS.data))
-                    setHeight(game.height)
-                    setWidth(game.width)
                     CanvasService.drawGame(game)
                     break;
+                case ServerMessageWSType.GAME_END:
+                    const time = JSON.parse(messageWS.data)
+                    console.log("Time: ", time)
             }
         }
 
@@ -43,7 +44,7 @@ class GameService {
 
     sendNewPlayer(playerName: string) {
         this.sendMessageWS(ClientMessageWSType.NEW_PLAYER, playerName)
-        setTimeout(() => this.sendNewGame2(), 1000)
+        this.sendNewGame1()
     }
 
     sendNewGame1() {
@@ -60,4 +61,4 @@ class GameService {
     }
 }
 
-export default new GameService();
+export default new WebSocketService();

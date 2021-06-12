@@ -14,5 +14,6 @@ enum class ClientMessageWSType {
 
 enum class ServerMessageWSType {
     PONG,
-    GAME
+    GAME,
+    GAME_END
 }

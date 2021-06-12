@@ -1,12 +1,13 @@
 import * as React from "react";
-import {useContext, useEffect} from "react";
+import {useEffect} from "react";
 import CanvasService from "services/CanvasService";
-import GameService from "services/GameService";
-import {GameContext} from "components/game/GameProvider";
+import WebSocketService from "services/WebSocketService";
+import CanvasResolution from "utils/CanvasResolution";
 
 export const Canvas = () => {
-    const {height, width} = useContext(GameContext)
-    const scala = 2
+    const height = CanvasResolution.height;
+    const width = CanvasResolution.width;
+    const scala = 2;
 
     useEffect(() => {
         const canvas = document.getElementById("canvas") as HTMLCanvasElement;
@@ -28,7 +29,7 @@ export const Canvas = () => {
         let rect = canvas.getBoundingClientRect();
         let x = (event.clientX - rect.left) * scala;
         let y = (event.clientY - rect.top) * scala;
-        GameService.sendClickPosition(x, y)
+        WebSocketService.sendClickPosition(x, y)
     }
 
     const style = {

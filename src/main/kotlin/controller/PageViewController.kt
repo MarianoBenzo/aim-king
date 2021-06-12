@@ -9,19 +9,18 @@ import kotlin.collections.HashMap
 
 class PageViewController {
 
-    fun index() =
+    fun index(height: Int, width: Int) =
         { _: Request, _: Response ->
             val model: HashMap<String, Any?> = hashMapOf(
-                "title" to "Aim King"
+                "title" to "Aim King",
+                "height" to height,
+                "width" to width
             )
-            render("index.vm", model)
+            renderEngine.render(ModelAndView(model, "public/index.vm"))
         }
 
     companion object {
         private val renderEngine: TemplateEngine
             get() = VelocityTemplateEngine()
-
-        private fun render(templateName: String, model: Map<String, Any?> = emptyMap()) =
-            renderEngine.render(ModelAndView(model, "public/$templateName"))
     }
 }

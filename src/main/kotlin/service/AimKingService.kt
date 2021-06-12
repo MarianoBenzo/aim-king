@@ -7,11 +7,15 @@ import kotlin.collections.HashMap
 
 class AimKingService(private val webSocketSenderService: WebSocketSenderService){
 
+    val height = 1000
+    val width = 2200
+
     var ids = AtomicLong(0)
     val players: HashMap<String, Player> = HashMap()
     val playersOnline: HashMap<Session, Player> = HashMap()
     val playersInLobby: HashMap<Session, Player> = HashMap()
     val games: HashMap<Session, Game> = HashMap()
+    val ranking: MutableList<Pair<Player, Long>> = mutableListOf()
 
     fun connectPlayer(session: Session, name: String) {
         players[name]?.let {
@@ -25,8 +29,7 @@ class AimKingService(private val webSocketSenderService: WebSocketSenderService)
 
     fun newGame1(session: Session) {
         playersOnline[session]?.let {
-            val game = Game(this, webSocketSenderService, hashMapOf(Pair(session, it)))
-            games[session] = game
+            games[session] = Game1(this, webSocketSenderService, Pair(session, it))
         }
     }
 
@@ -36,7 +39,7 @@ class AimKingService(private val webSocketSenderService: WebSocketSenderService)
             if (playersInLobby.size == 2) {
                 val players = HashMap(playersInLobby)
                 playersInLobby.clear()
-                val game = Game(this, webSocketSenderService, players)
+                val game = Game2(this, webSocketSenderService, players)
                 players.keys.forEach {
                     session ->  games[session] = game
                 }
@@ -44,9 +47,19 @@ class AimKingService(private val webSocketSenderService: WebSocketSenderService)
         }
     }
 
+    fun addNewTime(session: Session, time: Long) {
+        playersOnline[session]?.let {
+            ranking.add(Pair(it, time))
+        }
+    }
+
+    fun getTop10(): List<Pair<Player, Long>> {
+        return ranking.sortedWith(compareBy({ it.second }, { it.first.name }))
+    }
+
     fun disconnectPlayer(session: Session) {
         playersOnline.remove(session)
         playersInLobby.remove(session)
-        games.remove(session)?.let { it.disconnectPlayer(session) }
+        games.remove(session)?.disconnectPlayer(session)
     }
 }
