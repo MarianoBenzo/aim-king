@@ -61,9 +61,14 @@ class WebSocketService {
         this.sendMessageWS(ClientMessageWSType.NEW_GAME, "GAME2")
     }
 
-    sendClickPosition(x: number, y: number) {
+    sendMouseClick(x: number, y: number) {
         const data = JSON.stringify(new Position(x, y))
-        this.sendMessageWS(ClientMessageWSType.CLICK, data)
+        this.sendMessageWS(ClientMessageWSType.MOUSE_CLICK, data)
+    }
+
+    sendMouseMove(x: number, y: number) {
+        const data = JSON.stringify(new Position(x, y))
+        this.sendMessageWS(ClientMessageWSType.MOUSE_MOVE, data)
     }
 }
 

@@ -8,7 +8,8 @@ enum class ClientMessageWSType {
     PING,
     NEW_PLAYER,
     NEW_GAME,
-    CLICK
+    MOUSE_CLICK,
+    MOUSE_MOVE
 }
 
 enum class ServerMessageWSType {

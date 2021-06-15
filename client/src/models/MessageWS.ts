@@ -12,7 +12,8 @@ export enum ClientMessageWSType {
 	PING = "PING",
 	NEW_PLAYER = "NEW_PLAYER",
 	NEW_GAME = "NEW_GAME",
-	CLICK = "CLICK"
+	MOUSE_CLICK = "MOUSE_CLICK",
+	MOUSE_MOVE = "MOUSE_MOVE"
 }
 
 export enum ServerMessageWSType {

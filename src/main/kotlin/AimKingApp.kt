@@ -11,8 +11,8 @@ private class AimKingApp(private val injector: Injector) {
 
     fun configure() = apply {
         port(System.getenv("PORT")?.toInt() ?: 9000)
-        staticFiles.externalLocation("src/main/resources/public")
-        //staticFiles.location("public")
+        //staticFiles.externalLocation("src/main/resources/public")
+        staticFiles.location("public")
         injector.getInstance(Routes::class.java).register()
     }
 
