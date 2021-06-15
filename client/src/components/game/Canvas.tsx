@@ -32,7 +32,7 @@ export const Canvas = () => {
             let x = (event.clientX - rect.left) * scala;
             let y = (event.clientY - rect.top) * scala;
             WebSocketService.sendMouseMove(x, y)
-            setTimeout(() => setMoveSent(false), 40)
+            setTimeout(() => setMoveSent(false), 30)
         }
     }
 

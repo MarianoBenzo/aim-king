@@ -45,6 +45,7 @@ class Game2(
                     broadcastGame(session, ClientMessageWSType.MOUSE_CLICK)
                 } else {
                     targets.clear()
+                    cursors.clear()
                     broadcastGame(session, ClientMessageWSType.MOUSE_CLICK)
                     broadcastEndGame(player)
                 }
