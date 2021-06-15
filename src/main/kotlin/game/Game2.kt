@@ -1,5 +1,6 @@
-package model
+package game
 
+import model.*
 import org.eclipse.jetty.websocket.api.Session
 import service.AimKingService
 import service.WebSocketSenderService
@@ -9,7 +10,7 @@ class Game2(
     aimKingService: AimKingService,
     webSocketSenderService: WebSocketSenderService,
     players: HashMap<Session, Player>
-) : Game(
+) : GameBase(
     aimKingService, webSocketSenderService, players
 ) {
     private val scores: HashMap<Player, Int> = hashMapOf()
@@ -23,7 +24,7 @@ class Game2(
                 startTime = System.currentTimeMillis()
                 addRandomTarget()
                 addRandomTarget()
-                broadcastGame()
+                webSocketSenderService.broadcast(players.keys, ServerMessageWSType.GAME, Game(targets, cursors))
             }
         }, startIn)
     }
@@ -32,19 +33,19 @@ class Game2(
         players.remove(session)
     }
 
-    override fun click(session: Session, position: Position) {
+    override fun mouseClick(session: Session, position: Position) {
         players[session]?.let { player ->
             targets.findLast {
                     target -> onTarget(position, target)
             }?.let { target ->
                 targets.remove(target)
                 scores[player] = scores[player]?.plus(1) ?: 0
-                if (scores[player]!! < 50) {
+                if (scores[player]!! < MAX_SCORE) {
                     addRandomTarget()
-                    broadcastGame()
+                    broadcastGame(session, ClientMessageWSType.MOUSE_CLICK)
                 } else {
                     targets.clear()
-                    broadcastGame()
+                    broadcastGame(session, ClientMessageWSType.MOUSE_CLICK)
                     broadcastEndGame(player)
                 }
             }
@@ -54,5 +55,9 @@ class Game2(
     override fun broadcastEndGame(winningPlayer: Player) {
         val time = System.currentTimeMillis() - startTime
         webSocketSenderService.broadcast(players.keys, ServerMessageWSType.GAME_END, "Winner: ${winningPlayer.name} in ${time / 1000.0} seconds")
+    }
+
+    companion object {
+        private const val MAX_SCORE = 50
     }
 }

@@ -1,5 +1,8 @@
 package service
 
+import game.GameBase
+import game.Game1
+import game.Game2
 import model.*
 import org.eclipse.jetty.websocket.api.Session
 import java.util.concurrent.atomic.AtomicLong
@@ -14,7 +17,7 @@ class AimKingService(private val webSocketSenderService: WebSocketSenderService)
     val players: HashMap<String, Player> = HashMap()
     val playersOnline: HashMap<Session, Player> = HashMap()
     private val playersInLobby: HashMap<Session, Player> = HashMap()
-    val games: HashMap<Session, Game> = HashMap()
+    val games: HashMap<Session, GameBase> = HashMap()
     private val ranking: MutableList<Pair<Player, Long>> = mutableListOf()
 
     fun connectPlayer(session: Session, name: String) {

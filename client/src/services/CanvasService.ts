@@ -1,5 +1,6 @@
 import Game from "models/Game";
 import Target from "models/Target";
+import Cursor from "models/Cursor";
 
 class CanvasService {
     ctx: CanvasRenderingContext2D;
@@ -25,6 +26,10 @@ class CanvasService {
 
             game.targets.forEach((target: Target) => {
                 this.drawTarget(target);
+            });
+
+            game.cursors.forEach((cursor: Cursor) => {
+                this.drawCursor(cursor);
             });
         }
     }
@@ -76,6 +81,24 @@ class CanvasService {
         this.ctx.fill();
         this.ctx.lineWidth = 4;
         this.ctx.strokeStyle = '#006b8d';
+        this.ctx.stroke();
+    }
+
+    drawCursor(cursor: Cursor) {
+        // body
+        this.ctx.beginPath();
+        this.ctx.arc(
+            cursor.position.x,
+            cursor.position.y,
+            6,
+            0,
+            2 * Math.PI,
+            false
+        );
+        this.ctx.fillStyle = '#c60000';
+        this.ctx.fill();
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeStyle = '#8d0000';
         this.ctx.stroke();
     }
 }

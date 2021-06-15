@@ -1,5 +1,5 @@
 import * as React from "react";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import CanvasService from "services/CanvasService";
 import WebSocketService from "services/WebSocketService";
 import CanvasResolution from "utils/CanvasResolution";
@@ -9,27 +9,31 @@ export const Canvas = () => {
     const width = CanvasResolution.width;
     const scala = 2;
 
+    const [moveSent, setMoveSent] = useState(false);
+
     useEffect(() => {
         const canvas = document.getElementById("canvas") as HTMLCanvasElement;
         CanvasService.initialize(canvas);
-
-        canvas.addEventListener("mousedown", (e: MouseEvent) => {
-            sendMousePosition(canvas, e);
-        });
-
-        /*
-        canvas.addEventListener("mousemove", (e: MouseEvent) => {
-            getMousePosition(canvas, e);
-        });
-        */
     }, []);
 
-
-    const sendMousePosition = (canvas, event) => {
+    const sendMouseClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
+        const canvas = document.getElementById("canvas") as HTMLCanvasElement;
         let rect = canvas.getBoundingClientRect();
         let x = (event.clientX - rect.left) * scala;
         let y = (event.clientY - rect.top) * scala;
-        WebSocketService.sendClickPosition(x, y)
+        WebSocketService.sendMouseClick(x, y)
+    }
+
+    const sendMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
+        if(!moveSent) {
+            setMoveSent(true)
+            const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+            let rect = canvas.getBoundingClientRect();
+            let x = (event.clientX - rect.left) * scala;
+            let y = (event.clientY - rect.top) * scala;
+            WebSocketService.sendMouseMove(x, y)
+            setTimeout(() => setMoveSent(false), 40)
+        }
     }
 
     const style = {
@@ -41,7 +45,9 @@ export const Canvas = () => {
         <canvas id="canvas"
                 height={height}
                 width={width}
-                style={style}>
+                style={style}
+                onMouseDown={(event: React.MouseEvent<HTMLCanvasElement>) => sendMouseClick(event)}
+                onMouseMove={(event: React.MouseEvent<HTMLCanvasElement>) => sendMouseMove(event)}>
             Error
         </canvas>
     );

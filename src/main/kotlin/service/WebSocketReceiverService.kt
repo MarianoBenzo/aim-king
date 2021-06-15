@@ -40,9 +40,13 @@ class WebSocketReceiverService(
                     }
                 }
             }
-            ClientMessageWSType.CLICK.name -> {
+            ClientMessageWSType.MOUSE_CLICK.name -> {
                 val position = messageWS.data?.let { jacksonObjectMapper().readValue<Position>(it) }
-                position?.let { aimKingService.games[session]?.click(session, it) }
+                position?.let { aimKingService.games[session]?.mouseClick(session, it) }
+            }
+            ClientMessageWSType.MOUSE_MOVE.name -> {
+                val position = messageWS.data?.let { jacksonObjectMapper().readValue<Position>(it) }
+                position?.let { aimKingService.games[session]?.mouseMove(session, it) }
             }
         }
         println("Message Received - Type: ${messageWS.type} ${messageWS.data?.let { "Data: $it" } ?: ""}")

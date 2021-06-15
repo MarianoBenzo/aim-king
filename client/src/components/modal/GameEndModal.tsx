@@ -1,6 +1,5 @@
 import React from "react";
-import WebSocketService from "services/WebSocketService";
-import WaitingPlayersModal from "components/modal/WaitingPlayersModal";
+import GamesModal from "components/modal/GamesModal";
 import styles from "./styles/gameEndModal.scss";
 
 interface Props {
@@ -12,25 +11,16 @@ interface Props {
 const GameEndModal = (props: Props) => {
     const {showModal, hideModal, result} = props
 
-    const sendGame1 = () => {
-        WebSocketService.sendNewGame1()
-        hideModal()
-    }
-
-    const sendGame2 = () => {
-        WebSocketService.sendNewGame2()
-        showModal(<WaitingPlayersModal/>)
+    const showGames = () => {
+        showModal(<GamesModal showModal={showModal} hideModal={hideModal}/>)
     }
 
     return (
         <div className={styles.container}>
             <div className={styles.title}>{result}</div>
             <div className={styles.buttons}>
-                <button onClick={sendGame1}>
-                    Game 1
-                </button>
-                <button onClick={sendGame2}>
-                    Game 2
+                <button onClick={showGames}>
+                    Ok
                 </button>
             </div>
         </div>

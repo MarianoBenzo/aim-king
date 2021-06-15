@@ -1,5 +1,7 @@
-package model
+package game
 
+import model.*
+import model.Target
 import org.eclipse.jetty.websocket.api.Session
 import service.AimKingService
 import service.WebSocketSenderService
@@ -9,7 +11,7 @@ class Game1 (
     aimKingService: AimKingService,
     webSocketSenderService: WebSocketSenderService,
     player: Pair<Session, Player>
-) : Game(
+) : GameBase(
     aimKingService, webSocketSenderService, hashMapOf(player)
 ) {
     private var score: Int = 0
@@ -21,23 +23,23 @@ class Game1 (
             override fun run() {
                 startTime = System.currentTimeMillis()
                 addRandomTarget()
-                broadcastGame()
+                webSocketSenderService.broadcast(players.keys, ServerMessageWSType.GAME, Game(targets, cursors))
             }
         }, startIn)
     }
 
     override fun disconnectPlayer(session: Session) {}
 
-    override fun click(session: Session, position: Position) {
+    override fun mouseClick(session: Session, position: Position) {
         val target: Target? = targets.findLast { target -> onTarget(position, target) }
         target?.let {
             targets.remove(it)
             score += 1
-            if ( score < 50) {
+            if ( score < MAX_SCORE) {
                 addRandomTarget()
-                broadcastGame()
+                broadcastGame(session, ClientMessageWSType.MOUSE_CLICK)
             } else {
-                broadcastGame()
+                broadcastGame(session, ClientMessageWSType.MOUSE_CLICK)
                 broadcastEndGame(players[session]!!)
             }
         }
@@ -47,5 +49,9 @@ class Game1 (
         val time = System.currentTimeMillis() - startTime
         aimKingService.addNewTime(winningPlayer, time)
         webSocketSenderService.broadcast(players.keys, ServerMessageWSType.GAME_END, "Time: ${time / 1000.0} seconds")
+    }
+
+    companion object {
+        private const val MAX_SCORE = 25
     }
 }
